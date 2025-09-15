@@ -1,9 +1,8 @@
-package com.example.cqrs.gcp.product.command.domain;
+package com.example.cqrs.gcp.product.command.domain.entity;
 
 import com.example.cqrs.gcp.product.command.domain.exception.InvalidProductDataException;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.util.Assert;
 
 @Getter
