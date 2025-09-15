@@ -38,8 +38,9 @@ public class ProductControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleIllegalStateException(IllegalArgumentException e) {
+    public ApiError handleIllegalStateException(IllegalArgumentException e, HttpServletRequest request) {
 
+        log.warn("Error while processing {}", request.getRequestURI(), e);
         return new ApiError("P-002", e.getMessage(), Collections.emptyMap());
     }
 
