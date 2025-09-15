@@ -26,6 +26,7 @@ public record ProductDto(
         @NotNull
         Long stock,
 
+        @NotEmpty
         List<ProductImageDto> images
 ) {
 }
