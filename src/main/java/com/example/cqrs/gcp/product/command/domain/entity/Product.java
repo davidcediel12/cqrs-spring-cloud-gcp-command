@@ -62,6 +62,16 @@ public class Product {
         this.initialPrice = initialPrice;
     }
 
+
+    public void setImages(List<ProductImage> images) {
+
+        if (images == null || images.isEmpty()) {
+            throw new InvalidProductDataException("Product mages cannot be empty");
+        }
+
+        this.images = images;
+    }
+
     public void setStock(Long stock) {
 
         this.validateNonNullAndPositive(stock, "stock");

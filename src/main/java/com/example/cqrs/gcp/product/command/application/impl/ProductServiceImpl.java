@@ -2,6 +2,7 @@ package com.example.cqrs.gcp.product.command.application.impl;
 
 import com.example.cqrs.gcp.product.command.application.ProductService;
 import com.example.cqrs.gcp.product.command.domain.entity.Product;
+import com.example.cqrs.gcp.product.command.domain.entity.ProductImage;
 import com.example.cqrs.gcp.product.command.domain.exception.ProductNotFoundException;
 import com.example.cqrs.gcp.product.command.domain.repository.ProductImageRepository;
 import com.example.cqrs.gcp.product.command.domain.repository.ProductRepository;
@@ -33,6 +34,11 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = productMapper.toEntity(productDto);
         product = productRepository.save(product);
+
+        for (ProductImage image : product.getImages()) {
+            image.setProduct(product);
+        }
+
 
         productImageRepository.saveAll(product.getImages());
 
