@@ -11,11 +11,11 @@ public record ProductDto(
         Long id,
 
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z0-9 ]+$")
+        @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Name must be alphanumeric")
         String name,
 
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z0-9 ]+$")
+        @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Description must be alphanumeric")
         String description,
 
         @Positive
