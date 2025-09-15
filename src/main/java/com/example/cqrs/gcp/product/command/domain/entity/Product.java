@@ -3,6 +3,7 @@ package com.example.cqrs.gcp.product.command.domain.entity;
 import com.example.cqrs.gcp.product.command.domain.exception.InvalidProductDataException;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.util.Assert;
@@ -15,6 +16,8 @@ import java.util.List;
 @Entity
 @Table(name = "product")
 public class Product {
+
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -40,14 +43,8 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime lastModifiedDate;
 
-    @OneToMany(fetch =  FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ProductImage> images;
-
-
-    public void setId(Long id) {
-        this.validateNonNullAndPositive(id, "id");
-        this.id = id;
-    }
 
     public void setName(String name) {
 
@@ -72,10 +69,10 @@ public class Product {
     }
 
 
-    private void validateNonNullAndPositive(Number n, String attribute){
+    private void validateNonNullAndPositive(Number n, String attribute) {
         Assert.notNull(n, String.format("%s cannot be null", attribute));
 
-        if(stock < 0){
+        if (n.longValue() < 0) {
             throw new InvalidProductDataException(
                     String.format("%s cannot be negative", attribute));
         }
