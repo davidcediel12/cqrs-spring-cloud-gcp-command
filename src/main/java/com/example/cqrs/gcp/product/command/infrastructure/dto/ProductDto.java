@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductDto(
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -23,6 +24,8 @@ public record ProductDto(
 
         @PositiveOrZero
         @NotNull
-        Long stock
+        Long stock,
+
+        List<ProductImageDto> images
 ) {
 }
