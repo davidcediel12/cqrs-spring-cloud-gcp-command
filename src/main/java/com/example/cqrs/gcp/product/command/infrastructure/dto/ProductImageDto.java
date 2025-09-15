@@ -11,6 +11,6 @@ public record ProductImageDto(
         @Pattern(regexp = "^https?://.*$")
         String url,
         @NotBlank
-        Boolean primary
+        Boolean isPrimary
 ) {
 }
