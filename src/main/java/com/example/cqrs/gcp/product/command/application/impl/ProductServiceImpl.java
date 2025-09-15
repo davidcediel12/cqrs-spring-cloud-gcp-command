@@ -34,6 +34,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.toEntity(productDto);
         product = productRepository.save(product);
 
+        productImageRepository.saveAll(product.getImages());
+
         return productMapper.toDto(product);
     }
 
