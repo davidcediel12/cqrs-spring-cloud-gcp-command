@@ -21,7 +21,7 @@ public class ProductImage {
     private String url;
 
     @Column(nullable = false)
-    private Boolean primary;
+    private Boolean isPrimary;
 
     @ManyToOne
     @Setter
@@ -39,9 +39,9 @@ public class ProductImage {
         this.url = url;
     }
 
-    public void setPrimary(Boolean primary) {
+    public void setIsPrimary(Boolean primary) {
 
         Assert.notNull(primary, "primary cannot be null");
-        this.primary = primary;
+        this.isPrimary = primary;
     }
 }

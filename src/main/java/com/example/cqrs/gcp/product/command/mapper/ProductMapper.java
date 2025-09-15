@@ -7,6 +7,8 @@ import com.example.cqrs.gcp.product.command.infrastructure.dto.ProductDto;
 import com.example.cqrs.gcp.product.command.infrastructure.dto.ProductImageDto;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
@@ -17,4 +19,9 @@ public interface ProductMapper {
     ProductImage toEntity(ProductImageDto productImageDto);
 
     ProductImageDto toDto(ProductImage product);
+
+
+    List<ProductImageDto> toImageDtos(List<ProductImage> productImages);
+
+    List<ProductImage> toImageEntities(List<ProductImageDto> productImageDtos);
 }
