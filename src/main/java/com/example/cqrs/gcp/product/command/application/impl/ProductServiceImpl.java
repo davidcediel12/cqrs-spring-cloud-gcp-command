@@ -1,5 +1,6 @@
 package com.example.cqrs.gcp.product.command.application.impl;
 
+import com.example.cqrs.gcp.product.command.application.ProductMessageService;
 import com.example.cqrs.gcp.product.command.application.ProductService;
 import com.example.cqrs.gcp.product.command.domain.entity.Product;
 import com.example.cqrs.gcp.product.command.domain.entity.ProductImage;
@@ -28,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductMapper productMapper;
+    private final ProductMessageService productMessageService;
 
     @Override
     public ProductDto create(@NotNull @Valid ProductDto productDto) {
@@ -41,6 +43,8 @@ public class ProductServiceImpl implements ProductService {
 
 
         productImageRepository.saveAll(product.getImages());
+
+        productMessageService.notifyNewProduct(product);
 
         return productMapper.toDto(product);
     }
