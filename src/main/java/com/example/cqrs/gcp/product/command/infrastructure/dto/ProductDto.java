@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record ProductDto(
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
 
         @NotBlank
