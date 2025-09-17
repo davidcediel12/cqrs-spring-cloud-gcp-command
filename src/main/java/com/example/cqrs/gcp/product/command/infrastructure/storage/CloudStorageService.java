@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -42,14 +44,17 @@ public class CloudStorageService implements StorageService {
         return imageNames.stream().map(imageName -> {
                     String imageType = getMediaType(imageName.name());
 
+
                     BlobInfo blobInfo = BlobInfo.newBuilder(cloudStorageProperties.getProductImageBucketName(), imageName.name())
-                            .setAcl(List.of(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER)))
+                            .setAcl(new ArrayList<>(List.of(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER))))
                             .setContentType(imageType)
                             .build();
+                    Map<String, String> extensionHeaders = Map.of("x-goog-acl", "public-read");
 
                     URL url = storage.signUrl(blobInfo, 5, TimeUnit.MINUTES,
                             Storage.SignUrlOption.httpMethod(HttpMethod.PUT),
                             Storage.SignUrlOption.withContentType(),
+                            Storage.SignUrlOption.withExtHeaders(extensionHeaders),
                             Storage.SignUrlOption.signWith((ServiceAccountSigner) credentialsToSign));
 
                     return url.toString();
@@ -67,7 +72,7 @@ public class CloudStorageService implements StorageService {
                     "blob-signer@thermal-beach-472102-c0.iam.gserviceaccount.com",
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    60);
+                    300);
         }
 
         return credentials;
@@ -76,9 +81,14 @@ public class CloudStorageService implements StorageService {
     private String getMediaType(String imageName) {
 
         String mediaType;
-        switch (imageName) {
-            case ".png" -> mediaType = MediaType.IMAGE_PNG_VALUE;
-            case ".jpg", ".jpeg" -> mediaType = MediaType.IMAGE_JPEG_VALUE;
+
+        String[] splitName = imageName.split("\\.");
+
+        String extension = splitName[splitName.length - 1];
+
+        switch (extension) {
+            case "png" -> mediaType = MediaType.IMAGE_PNG_VALUE;
+            case "jpg", "jpeg" -> mediaType = MediaType.IMAGE_JPEG_VALUE;
             default -> mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
         }
 
