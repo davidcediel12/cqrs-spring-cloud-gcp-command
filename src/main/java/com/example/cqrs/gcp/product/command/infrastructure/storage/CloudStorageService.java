@@ -67,7 +67,7 @@ public class CloudStorageService implements StorageService {
                     "blob-signer@thermal-beach-472102-c0.iam.gserviceaccount.com",
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    600000);
+                    60);
         }
 
         return credentials;
