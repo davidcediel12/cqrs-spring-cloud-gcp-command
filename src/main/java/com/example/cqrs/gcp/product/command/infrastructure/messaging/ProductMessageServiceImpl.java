@@ -7,6 +7,8 @@ import com.example.cqrs.gcp.product.command.infrastructure.dto.messaging.Message
 import com.example.cqrs.gcp.product.command.infrastructure.dto.messaging.MessageType;
 import com.example.cqrs.gcp.product.command.infrastructure.dto.messaging.ProductMessage;
 import com.example.cqrs.gcp.product.command.mapper.ProductMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ public class ProductMessageServiceImpl implements ProductMessageService {
     private final PubSubTemplate pubSubTemplate;
     private final PubSubProperties pubSubProperties;
     private final ProductMapper productMapper;
+    private final ObjectMapper objectMapper;
 
 
     @Override
@@ -28,7 +31,13 @@ public class ProductMessageServiceImpl implements ProductMessageService {
 
         ProductMessage productMessage = productMapper.toMessage(product);
 
-        Message message = new Message(MessageType.PRODUCT_CREATED, productMessage);
+        Message message;
+        try {
+            message = new Message(MessageType.PRODUCT_CREATED, objectMapper.writeValueAsString(productMessage));
+        } catch (JsonProcessingException e) {
+            log.error("Error while serializing the product message {}", productMessage, e);
+            throw new RuntimeException(e); // TODO change to a dedicated exception
+        }
         pubSubTemplate.publish(pubSubProperties.getTopic(), message);
 
     }
