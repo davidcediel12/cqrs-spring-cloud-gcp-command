@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-command
+  labels:
+    app: product-command
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-command
+  template:
+    metadata:
+      name: product-command
+      labels:
+        app: product-command
+    spec:
+      serviceAccountName: k8s-service-account
+      containers:
+        - name: product-command
+          image: us-central1-docker.pkg.dev/thermal-beach-472102-c0/e-commerce-repo/product-command:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health
+            timeoutSeconds: 120
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              memory: 1024Mi
+          env:
+            - name: DATASOURCE_URL
+              value: jdbc:postgresql://104.198.157.90:5432/testing
+            - name: DATASOURCE_USERNAME
+              value: postgres
+            - name: PRODUCT_TOPIC
+              value: orders
+            - name: PRODUCT_BUCKET
+              value: spring-bucket-esdago18
+            - name: DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password
+                  key: DATASOURCE_PASSWORD
+      restartPolicy: Always
+      
