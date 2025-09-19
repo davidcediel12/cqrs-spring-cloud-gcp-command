@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +40,10 @@ public class ProductMessageServiceImpl implements ProductMessageService {
             log.error("Error while serializing the product message {}", productMessage, e);
             throw new RuntimeException(e); // TODO change to a dedicated exception
         }
-        pubSubTemplate.publish(pubSubProperties.getTopic(), message);
+
+        Map<String, String> attributes = Map.of("event_type", MessageType.PRODUCT_CREATED.name());
+        pubSubTemplate.publish(pubSubProperties.getTopic(), message, attributes);
+
 
     }
 }

@@ -8,6 +8,7 @@ import com.example.cqrs.gcp.product.command.infrastructure.dto.ProductImageDto;
 import com.example.cqrs.gcp.product.command.infrastructure.dto.messaging.ProductImageMessage;
 import com.example.cqrs.gcp.product.command.infrastructure.dto.messaging.ProductMessage;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public interface ProductMapper {
 
     ProductDto toDto(Product product);
 
+    @Mapping(target = "product", ignore = true)
     ProductImage toEntity(ProductImageDto productImageDto);
 
     ProductImageDto toDto(ProductImage product);
