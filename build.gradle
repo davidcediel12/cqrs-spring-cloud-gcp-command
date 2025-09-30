@@ -57,3 +57,13 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
+tasks.named('bootBuildImage') {
+    bindings = [
+            "${project.projectDir}/src/main/resources/profiler-agent:/platform/bindings/google-stackdriver"
+    ]
+    environment = [
+            "JAVA_TOOL_OPTIONS": "-agentpath:/opt/cprof/profiler_java_agent.so=-cprof_service=product-command,-cprof_service_version=1.0.0,-cprof_project_id=thermal-beach-472102-c0"
+    ]
+}
