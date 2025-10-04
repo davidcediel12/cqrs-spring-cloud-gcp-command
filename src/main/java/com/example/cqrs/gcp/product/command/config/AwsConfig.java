@@ -7,12 +7,10 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-
-import java.net.URI;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
 public class AwsConfig {
-
 
 
     @Bean
@@ -21,11 +19,23 @@ public class AwsConfig {
 
         return S3Client.builder()
                 .region(Region.of(awsProperties.region()))
-                .endpointOverride(URI.create("https://s3.us-west-2.amazonaws.com"))
-                .forcePathStyle(true)
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(awsProperties.accessKeyId(), awsProperties.accessKey())
-                ))
+                .credentialsProvider(getStaticCredentials(awsProperties))
                 .build();
+    }
+
+
+    @Bean
+    public S3Presigner s3Presigner(AwsProperties awsProperties) {
+        return S3Presigner.builder()
+                .region(Region.of(awsProperties.region()))
+                .credentialsProvider(getStaticCredentials(awsProperties))
+                .build();
+    }
+
+
+    private StaticCredentialsProvider getStaticCredentials(AwsProperties awsProperties) {
+        return StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(awsProperties.accessKeyId(), awsProperties.accessKey())
+        );
     }
 }
