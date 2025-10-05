@@ -8,6 +8,8 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.sns.SnsClient;
+
 
 @Configuration
 public class AwsConfig {
@@ -32,6 +34,14 @@ public class AwsConfig {
                 .build();
     }
 
+
+    @Bean
+    public SnsClient snsClient(AwsProperties awsProperties) {
+        return SnsClient.builder()
+                .region(Region.of(awsProperties.region()))
+                .credentialsProvider(getStaticCredentials(awsProperties))
+                .build();
+    }
 
     private StaticCredentialsProvider getStaticCredentials(AwsProperties awsProperties) {
         return StaticCredentialsProvider.create(
